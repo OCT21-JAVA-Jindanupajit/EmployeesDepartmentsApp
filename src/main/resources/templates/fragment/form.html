@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<th:block th:remove="all">
+    <th:block th:fragment="input-hidden-param (name, value)">
+        <input th:name="${name}" type="hidden" class="formcontrol" th:value="${value}"/>
+    </th:block>
+    <th:block th:fragment="input-hidden-field (field)">
+        <input type="hidden" class="formcontrol" th:field="${__${field}__}"/>
+    </th:block>
+    <th:block th:fragment="input-text-param (name, placeHolder, initialValue)">
+        <input th:id="${name}" th:name="${name}" th:placeholder="${placeHolder}" type="text"
+               class="formcontrol input input-text input-param"
+               th:value="${initialValue}" th:classappend="${'input-name-'+name}"/>
+    </th:block>
+    <th:block th:fragment="input-date-param (name, placeHolder, initialValue)">
+        <input th:id="${name}" th:name="${name}" th:placeholder="${placeHolder}" type="date"
+               class="formcontrol input input-date input-param"
+               th:value="${initialValue}" th:classappend="${'input-name-'+name}"/>
+    </th:block>
+    <th:block th:fragment="input-time-param (name, placeHolder, initialValue)">
+        <input th:id="${name}" th:name="${name}" th:placeholder="${placeHolder}" type="time"
+               class="formcontrol input input-time input-param"
+               th:value="${initialValue}" th:classappend="${'input-name-'+name}"/>
+    </th:block>
+    <th:block th:fragment="input-timestamp-param (name, placeHolder, initialValue)">
+        <input th:id="${name}" th:name="${name}" th:placeholder="${placeHolder}" type="datetime-local"
+               class="formcontrol input input-time input-param"
+               th:value="${initialValue}" th:classappend="${'input-name-'+name}"/>
+    </th:block>
+
+    <th:block th:fragment="input-text-field (name, field, placeHolder)">
+        <input th:id="${name}" th:name="${name}" th:placeholder="${placeHolder}" type="text"
+               class="formcontrol input input-text input-field"
+               th:field="${__${field}__}"
+               th:classappend="${'input-name-'+name}"/>
+    </th:block>
+    <th:block th:fragment="input-file-param (name, placeHolder, accept)">
+        <div class="custom-file">
+            <label th:id="${'label-for-'+name}" class="file-label custom-file-label" th:for="${name}" th:text="${placeHolder}">Choose file</label>
+            <input type="file" class="formcontrol input input-file input-param custom-file-input" th:id="${name}" th:name="${name}" th:accept="${accept}">
+            <script th:inline="text">
+                $('#[[${name}]]').on('change', function(){
+                    // Show only filename not folder (/->linux \->window)
+                    var fileName = $(this).val().split('/').pop().split('\\').pop();
+                    if (fileName.length > 35) {
+                        var o = fileName;
+                        fileName = o.substr(0,15)+"....."+o.substr(-15);
+                    }
+
+                    $('#label-for-[[${name}]]').html(fileName);
+                })
+            </script>
+        </div>
+    </th:block>
+</body>
+</html>

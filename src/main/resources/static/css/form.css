@@ -1,0 +1,39 @@
+input {
+    border-width: 0 0 2px 0;
+    border-bottom-color: #68cf00;
+    background-color: #000000;
+    color: #ffffff;
+    caret-color: #ffffff;
+    outline: none;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+    -webkit-text-fill-color: #cccf27 !important;
+    caret-color: #cccf27;
+    -webkit-box-shadow: 0 0 0 30px #000000 inset !important;
+}
+form#search-customer {
+    height: 100%;
+}
+#search-customer #name {
+    width: 40rem;
+
+}
+#search-customer #submit {
+    right: 1rem;
+    bottom: 1rem;
+    position: fixed;
+}
+
+.label {
+    width: auto;
+}
