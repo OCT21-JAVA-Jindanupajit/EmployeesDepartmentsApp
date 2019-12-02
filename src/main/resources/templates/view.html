@@ -30,9 +30,17 @@
     <link rel="stylesheet" th:href="@{/css/form.css}" />
 </head>
 <body>
+<!--/*@thymesVar id="person" type="com.jindanupajit.starter.model.Person"*/-->
+<!--/*@thymesVar id="field" type="com.jindanupajit.starter.util.thymeleaf.FieldInfo"*/-->
 <nav th:replace="fragment/nav :: AllMenu">...</nav>
 <div id="display">
-...
+
+    <div th:each="field : ${#info.getAllSettableFieldOf(person)}">
+        <!--/*@thymesVar id="field" type="com.jindanupajit.starter.util.thymeleaf.FieldInfo"*/-->
+        <span th:text="${field.name}"></span> is
+        <span th:text="${field.type}"></span>
+        <div th:insert="fragment/form::__${field.type}__  (field = ${field})">...</div>
+    </div>
 </div>
 
 
