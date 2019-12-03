@@ -6,25 +6,41 @@ import javax.validation.constraints.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.HashSet;
+import java.util.*;
 
 public class Info {
     public static final String expressionObjectName = "info";
+
+
+        public static final ActionType PERSIST = ActionType.PERSIST;
+        public static final ActionType MERGE = ActionType.MERGE;
+        public static final ActionType DELETE = ActionType.DELETE;
+
 
     public String classNameOf(Object o) {
         return o.getClass().getName();
     }
 
-    public Iterable<FieldInfo> getAllSettableFieldOf(Object o) {
+    public List<FieldInfo> getAllSettableFieldOf(Object o) {
         HashSet<FieldInfo> settableFields = new HashSet<>();
-        for(Field field : o.getClass().getDeclaredFields()){
-            Class type = field.getType();
-            String name = field.getName();
-            String setter = "set"+name.substring(0, 1).toUpperCase() + name.substring(1);
+        for(Method method : o.getClass().getDeclaredMethods()){
+            String name = method.getName();
+
+            if (!name.startsWith("set") || (name.length() < 4) || (method.getParameterTypes().length != 1))
+                continue;
+
+            Class type = method.getParameterTypes()[0];
+
+            String fieldName = name.substring(3, 4).toLowerCase() + name.substring(4);
+
             try {
-                Method method = o.getClass().getDeclaredMethod(setter, type);
+                Field field = o.getClass().getDeclaredField(fieldName);
+                if (field.getType() != type)
+                    continue;
+
+                System.out.println(fieldName);
                 if (Modifier.isPublic(method.getModifiers())) {
-                    FieldInfo fieldInfo = new FieldInfo(name, type.getName().replace(".","-"));
+                    FieldInfo fieldInfo = new FieldInfo(fieldName, type.getName().replace(".","-"));
 
                     // JPA
                     fieldInfo.setId(field.isAnnotationPresent(Id.class));
@@ -51,13 +67,42 @@ public class Info {
                         fieldInfo.setSizeMaxValue(field.getDeclaredAnnotation(Size.class).max());
                     }
 
+                    if (field.isAnnotationPresent(UserInput.class)) {
+                        UserInput userInput = field.getDeclaredAnnotation(UserInput.class);
+                        fieldInfo.setOrdinal(userInput.Ordinal());
+                        fieldInfo.setLabel(userInput.Label());
+                        fieldInfo.setPlaceHolder(userInput.PlaceHolder());
+                    }
+
                     settableFields.add(fieldInfo);
                 }
-            } catch (NoSuchMethodException e) {
+            } catch (NoSuchFieldException e) {
                 continue;
             }
         }
-        return settableFields;
+
+        ArrayList<FieldInfo> sortedSettableFields = new ArrayList<>(settableFields);
+        Collections.sort(sortedSettableFields);
+        return sortedSettableFields;
+    }
+
+    public ActionMapping getActionHandler(Object obj, ActionType actionType) {
+        if (obj == null)
+            return null;
+        ActionMapping[] actionMappings = obj.getClass().getDeclaredAnnotationsByType(ActionMapping.class);
+        System.out.println("Get ActionHandler of " + obj.getClass().getName());
+        System.out.println("Contain "+actionMappings.length);
+        for (ActionMapping actionMapping : actionMappings) {
+            System.out.print(actionMapping.Url());
+            List<ActionType> actionTypes = Arrays.asList(actionMapping.Action());
+            if (actionTypes.contains(actionType)) {
+                System.out.println(" yes");
+                return actionMapping;
+            }
+            System.out.println(" no");
+        }
+
+        return null;
     }
 
 }

@@ -32,14 +32,19 @@
 <body>
 <!--/*@thymesVar id="person" type="com.jindanupajit.starter.model.Person"*/-->
 <!--/*@thymesVar id="field" type="com.jindanupajit.starter.util.thymeleaf.FieldInfo"*/-->
+
 <nav th:replace="fragment/nav :: AllMenu">...</nav>
 <div id="display">
-
-    <div th:each="field : ${#info.getAllSettableFieldOf(person)}">
-        <!--/*@thymesVar id="field" type="com.jindanupajit.starter.util.thymeleaf.FieldInfo"*/-->
-        <span th:text="${field.name}"></span> is
-        <span th:text="${field.type}"></span>
-        <div th:insert="fragment/form::__${field.type}__  (field = ${field})">...</div>
+    <div class="container p-2" th:with="actionHandler = ${#info.getActionHandler(person, #info.PERSIST)}">
+        <form th:if="${actionHandler}" th:object="${person}" th:action="${actionHandler.Url()}"
+              th:method="${actionHandler.Method()}">
+        <table class="user-input table">
+        <th:block th:each="field : ${#info.getAllSettableFieldOf(person)}">
+            <tr th:replace="fragment/form::__${field.type}__  (field = ${field})">...</tr>
+        </th:block>
+        </table>
+            <button role="button" class="btn btn-success float-right" type="submit">Submit</button>
+        </form>
     </div>
 </div>
 

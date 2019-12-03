@@ -1,9 +1,13 @@
 package com.jindanupajit.starter.util.thymeleaf;
 
-public class FieldInfo {
+public class FieldInfo implements Comparable<FieldInfo> {
 
     private String name;
     private String type;
+
+    private int ordinal;
+    private String label;
+    private String placeHolder;
     private boolean id;
     private boolean generatedValue;
     private boolean notNull;
@@ -20,6 +24,8 @@ public class FieldInfo {
     public FieldInfo(String name, String type) {
         this.name = name;
         this.type = type;
+        this.placeHolder = "";
+        this.ordinal = Integer.MAX_VALUE;
     }
 
     public String getName() {
@@ -36,6 +42,30 @@ public class FieldInfo {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public int getOrdinal() {
+        return ordinal;
+    }
+
+    public void setOrdinal(int ordinal) {
+        this.ordinal = ordinal;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public String getPlaceHolder() {
+        return placeHolder;
+    }
+
+    public void setPlaceHolder(String placeHolder) {
+        this.placeHolder = placeHolder;
     }
 
     public boolean isId() {
@@ -132,5 +162,10 @@ public class FieldInfo {
 
     public void setSizeMaxValue(int sizeMaxValue) {
         this.sizeMaxValue = sizeMaxValue;
+    }
+
+    @Override
+    public int compareTo(FieldInfo o) {
+        return Integer.compare(this.getOrdinal(), o.getOrdinal());
     }
 }
