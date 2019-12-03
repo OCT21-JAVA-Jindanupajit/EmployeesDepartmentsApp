@@ -14,4 +14,5 @@ public @interface ActionMapping {
     ActionType[] Action();
     String Url() default "#";
     RequestMethod Method() default RequestMethod.GET;
+    String Label() default "Submit";
 }

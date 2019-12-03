@@ -8,6 +8,7 @@ public class FieldInfo implements Comparable<FieldInfo> {
     private int ordinal;
     private String label;
     private String placeHolder;
+    private boolean secret;
     private boolean id;
     private boolean generatedValue;
     private boolean notNull;
@@ -66,6 +67,14 @@ public class FieldInfo implements Comparable<FieldInfo> {
 
     public void setPlaceHolder(String placeHolder) {
         this.placeHolder = placeHolder;
+    }
+
+    public boolean isSecret() {
+        return secret;
+    }
+
+    public void setSecret(boolean secret) {
+        this.secret = secret;
     }
 
     public boolean isId() {

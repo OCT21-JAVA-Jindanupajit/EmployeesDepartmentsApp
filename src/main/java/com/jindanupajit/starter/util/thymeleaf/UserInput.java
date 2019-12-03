@@ -7,7 +7,8 @@ import java.lang.annotation.RetentionPolicy;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UserInput {
-    int Ordinal() default 0;
+    int Ordinal() default Integer.MAX_VALUE;
     String Label();
-    String PlaceHolder();
+    String PlaceHolder() default "";
+    boolean Secret() default false;
 }

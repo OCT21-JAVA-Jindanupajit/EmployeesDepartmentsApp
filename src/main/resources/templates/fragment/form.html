@@ -6,6 +6,23 @@
 </head>
 <body>
 
+<th:block th:remove="all">
+    <th:block th:fragment="form-auto (action)">
+        <div class="container p-2" th:with="actionHandler = ${#info.getActionHandler(formObject, action)}">
+            <form th:if="${actionHandler}"
+                  th:action="${actionHandler.Url()}"
+                  th:method="${actionHandler.Method()}"
+                  th:object="${formObject}">
+                <table class="user-input table">
+                    <th:block th:each="field : ${#info.getAllSettableFieldOf(formObject)}">
+                        <tr th:replace="fragment/form::__${field.type}__  (field = ${field})">...</tr>
+                    </th:block>
+                </table>
+                <button role="button" class="btn btn-success float-right" type="submit" th:text="${actionHandler.Label()}">Submit</button>
+            </form>
+        </div>
+    </th:block>
+</th:block>
 <!--/*@thymesVar id="field" type="com.jindanupajit.starter.util.thymeleaf.FieldInfo"*/-->
 <th:block th:remove="all">
     <th:block th:fragment="java-lang-String (field)">
@@ -36,7 +53,7 @@
 
 <th:block th:remove="all">
     <th:block th:fragment="input-text-auto (field)">
-    <input th:field="*{__${field.name}__}" th:placeholder="${field.placeHolder}" type="text"
+    <input th:field="*{__${field.name}__}" th:placeholder="${field.placeHolder}" th:type="${field.secret?'password':'text'}"
            class="formcontrol input input-text input-auto"
            th:classappend="${'input-name-'+field.name}"
            th:required="${field.notNull or field.notEmpty or field.notBlank}"/>

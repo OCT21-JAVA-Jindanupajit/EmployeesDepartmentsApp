@@ -15,7 +15,7 @@ public class Info {
         public static final ActionType PERSIST = ActionType.PERSIST;
         public static final ActionType MERGE = ActionType.MERGE;
         public static final ActionType DELETE = ActionType.DELETE;
-
+    public static final ActionType LOGIN = ActionType.LOGIN;
 
     public String classNameOf(Object o) {
         return o.getClass().getName();
@@ -72,6 +72,7 @@ public class Info {
                         fieldInfo.setOrdinal(userInput.Ordinal());
                         fieldInfo.setLabel(userInput.Label());
                         fieldInfo.setPlaceHolder(userInput.PlaceHolder());
+                        fieldInfo.setSecret(userInput.Secret());
                     }
 
                     settableFields.add(fieldInfo);
@@ -103,6 +104,29 @@ public class Info {
         }
 
         return null;
+    }
+
+    private String typeResolver(Class cls) {
+        if (String.class.equals(cls)) {
+            return "String";
+        } else if (Boolean.class.equals(cls)) {
+            return "Boolean";
+        } else if (Character.class.equals(cls)) {
+            return "Character";
+        } else if (Byte.class.equals(cls)) {
+            return "Byte";
+        } else if (Integer.class.equals(cls)) {
+            return "Integer";
+        } else if (Long.class.equals(cls)) {
+            return "Long";
+        } else if (Double.class.equals(cls)) {
+            return "Double";
+        } else if (Float.class.equals(cls)) {
+            return "Float";
+        } else if (Short.class.equals(cls)) {
+            return "Short";
+        }
+        return cls.getName();
     }
 
 }

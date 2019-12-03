@@ -32,7 +32,28 @@
     padding-bottom: 0;
     width: 100%;
     text-align: center;
+    display: block;
 }
+
+.nav .user {
+    font-size: 0.8rem;
+    color: #5e9d9f;
+    width: 100%;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    padding: 2px;
+    display: block;
+    position: relative;
+    max-width: 75px;
+    animation: moving 20s infinite;
+    animation-direction: alternate;
+}
+@keyframes moving {
+    from {left: 40px;}
+    to {left: -40px;}
+}
+
 /* The navigation menu links */
 a.nav-item {
     font-family: 'Dosis', sans-serif;

@@ -7,7 +7,7 @@
 <body>
 <div th:fragment="AllMenu" id="Menu">
     <nav th:fragment="MainMenu" id="MainMenu" class="nav active">
-        <div class="brand">Start</div>
+        <a href="/" class="brand">Start</a>
         <a th:replace="::nav-link(
             label='Entity #1',
             href='javascript: document.getElementById(\'Menu\').activateMenu(document.getElementById(\'CustomerMenu\'));',
@@ -20,30 +20,34 @@
             icon='mood',
             theme='filled',
             class='')">link</a>
-        <a th:replace="::nav-link(
-            label='Register',
-            href='#',
-            icon='person_add',
-            theme='filled',
-            class='')">link</a>
-        <a th:replace="::nav-link(
-            label='Login',
-            href='#',
-            icon='account_box',
-            theme='filled',
-            class='')">link</a>
-        <a th:replace="::nav-link(
-            label='Logout',
-            href='#',
-            icon='exit_to_app',
-            theme='filled',
-            class='')">link</a>
-        <a th:replace="::nav-link(
-            label='Setting',
-            href='#',
-            icon='tune',
-            theme='filled',
-            class='edge')">link</a>
+        <th:block th:unless="${authentication.isAuthenticated()}">
+            <a th:replace="::nav-link(
+                label='Register',
+                href='/user/add',
+                icon='person_add',
+                theme='filled',
+                class='')">link</a>
+            <a th:replace="::nav-link(
+                label='Login',
+                href='/login',
+                icon='account_box',
+                theme='filled',
+                class='')">link</a>
+        </th:block>
+        <th:block th:if="${authentication.isAuthenticated()}">
+            <a th:replace="::nav-link(
+                label='Logout',
+                href='/logout',
+                icon='exit_to_app',
+                theme='filled',
+                class='')">link</a>
+            <a th:replace="::nav-link(
+                label='Setting',
+                href='#',
+                icon='tune',
+                theme='filled',
+                class='edge')">link</a>
+        </th:block>
     </nav>
     <nav th:fragment="CustomerMenu" id="CustomerMenu" class="nav inactive">
         <a th:replace="::nav-link(
