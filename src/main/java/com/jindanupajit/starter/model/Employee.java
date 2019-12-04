@@ -8,15 +8,15 @@ import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
-public class User implements UserDetails {
+public class Employee implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String displayName;
 
-    @NaturalId
     private String username;
+
     private String password;
     private boolean accountNonExpired;
     private boolean accountNonLocked;
@@ -26,15 +26,34 @@ public class User implements UserDetails {
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> authorities;
 
-    public User() {
+    @ManyToOne(
+        fetch = FetchType.EAGER,
+        cascade = {CascadeType.PERSIST, CascadeType.MERGE} // do not delete dept. when delete a user
+    )
+    private Department department;
+
+    public Employee() {
     }
 
-    public User(String displayName, String username, String password, Collection<Role> authorities) {
+    public Employee(String displayName, String username, String password, Collection<Role> authorities) {
         this.displayName = displayName;
         this.username = username;
         this.password = password;
         this.authorities = authorities;
 
+        this.accountNonExpired = true;
+        this.accountNonLocked = true;
+        this.credentialsNonExpired = true;
+        this.enabled = true;
+    }
+
+    public Employee(long id, String displayName, String username, String password, Collection<Role> authorities, Department department) {
+        this.id = id;
+        this.displayName = displayName;
+        this.username = username;
+        this.password = password;
+        this.authorities = authorities;
+        this.department = department;
         this.accountNonExpired = true;
         this.accountNonLocked = true;
         this.credentialsNonExpired = true;
@@ -118,5 +137,13 @@ public class User implements UserDetails {
 
     public void setAuthorities(Collection<Role> authorities) {
         this.authorities = authorities;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 }

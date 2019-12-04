@@ -17,7 +17,7 @@ public class Role implements GrantedAuthority {
     private String authority;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private Collection<User> userCollection;
+    private Collection<Employee> employeeCollection;
 
     public Role() {
     }
@@ -43,11 +43,11 @@ public class Role implements GrantedAuthority {
         this.authority = authority;
     }
 
-    public Collection<User> getUserCollection() {
-        return userCollection;
+    public Collection<Employee> getEmployeeCollection() {
+        return employeeCollection;
     }
 
-    public void setUserCollection(Collection<User> userCollection) {
-        this.userCollection = userCollection;
+    public void setEmployeeCollection(Collection<Employee> employeeCollection) {
+        this.employeeCollection = employeeCollection;
     }
 }

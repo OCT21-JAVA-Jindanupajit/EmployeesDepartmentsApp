@@ -37,13 +37,14 @@ public class SecurityConfiguration  extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http    .authorizeRequests()
                 .antMatchers(
+                        "/",
                         "/login",
                         "/logout",
                         "/js/**",
                         "/css/**",
                         "/images/**",
-                        "/search/**",
-                        "/user/add")
+                        "/search/**"
+                )
                 .permitAll();
 
         if (h2ConsoleEnabled) {

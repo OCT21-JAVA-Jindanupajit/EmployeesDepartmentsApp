@@ -6,6 +6,7 @@ import com.jindanupajit.starter.service.PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,23 +14,18 @@ import java.util.Collections;
 @Component
 public class DatabaseInitializer implements CommandLineRunner {
 
-    @Autowired
-    BookRepository bookRepository;
 
     @Autowired
-    PersonRepository personRepository;
-
-    @Autowired
-    StoreRepository storeRepository;
-
-    @Autowired
-    UserRepository userRepository;
+    EmployeeRepository employeeRepository;
 
     @Autowired
     RoleRepository roleRepository;
 
+    @Autowired
+    DepartmentRepository departmentRepository;
 
     @Override
+    @Transactional
     public void run(String... args) {
         Role roleAdmin, roleUser;
         if (roleRepository.count() == 0) {
@@ -43,18 +39,53 @@ public class DatabaseInitializer implements CommandLineRunner {
             roleUser = roleRepository.findByAuthority("USER");
         }
 
-        if (userRepository.count() == 0) {
-            User userAdmin = new User("Administrator",
-                    "admin",
+        Department deptIT, deptIntern;
+        if (departmentRepository.count() == 0) {
+            deptIT = new Department("Information Technology (IT)");
+            deptIntern = new Department( "Internship");
+
+            departmentRepository.saveAll(Arrays.asList(deptIT, deptIntern));
+        } else {
+            deptIT = departmentRepository.findByName("Information Technology (IT)");
+            deptIntern = departmentRepository.findByName("Internship");
+        }
+
+        if (employeeRepository.count() == 0) {
+            Employee employeeAdmin = new Employee("Administrator",
+                    "admin@example.com",
                     PasswordEncoder.getInstance().encode("password"),
                     Arrays.asList(roleAdmin, roleUser));
-            User userUser1 = new User("User #1",
-                    "user1",
+                    employeeAdmin.setDepartment(deptIT);
+            Employee employeeKrissada = new Employee("Krissada",
+                    "krissada@example.com",
+                    PasswordEncoder.getInstance().encode("password"),
+                    Arrays.asList(roleAdmin, roleUser));
+                    employeeKrissada.setDepartment(deptIT);
+            Employee employeeJohnDoe = new Employee("John Doe",
+                    "john.doe@example.com",
                     PasswordEncoder.getInstance().encode("password"),
                     Collections.singletonList(roleUser));
+                    employeeJohnDoe.setDepartment(deptIntern);
+            Employee employeeJaneDoe = new Employee("Jane Doe",
+                    "jane.doe@example.com",
+                    PasswordEncoder.getInstance().encode("password"),
+                    Collections.singletonList(roleUser));
+                    employeeJaneDoe.setDepartment(deptIntern);
+            Employee employeeJackDoe = new Employee("Jack Doe",
+                    "jack.doe@example.com",
+                    PasswordEncoder.getInstance().encode("password"),
+                    Collections.singletonList(roleUser));
+                    employeeJackDoe.setDepartment(deptIntern);
+            employeeRepository.saveAll(Arrays.asList(employeeAdmin, employeeKrissada, employeeJohnDoe, employeeJaneDoe, employeeJackDoe));
 
-            userRepository.saveAll(Arrays.asList(userAdmin, userUser1));
+            deptIT.getEmployeeCollection().addAll(Arrays.asList(employeeAdmin, employeeKrissada));
+            deptIntern.getEmployeeCollection().addAll(Arrays.asList(employeeJohnDoe, employeeJaneDoe, employeeJackDoe));
+
+            departmentRepository.saveAll(Arrays.asList(deptIT, deptIntern));
 
         }
+
+
+
     }
 }

@@ -7,11 +7,24 @@
 
 <nav th:replace="fragment/nav :: AllMenu">...</nav>
 <div id="display">
-    <div th:if="${authentication.authenticated}">
-        <span th:text="${authentication.name}">...</span>
+    <div class="container">
+    <div class="display-4 mx-auto my-2">Welcome to JBC, Co.</div>
+    <ul>
+    <th:block th:each="department : ${departmentCollection}">
+            <li>
+                <a th:href="@{/department/edit(id=${department.id})}" th:text="${department.name}">...</a>
+                <ul>
+                <th:block th:each="employee : ${department.employeeCollection}">
+                    <li> <a th:href="@{/employee/edit(id=${employee.id})}" th:text="${employee.displayName}">...</a>
+                        (<a sec:authorize="!isAuthenticated()" th:href="@{/login(username=${employee.username})}"  th:text="${employee.username}">...
+                        </a><span sec:authorize="isAuthenticated()" th:text="${employee.username}">...</span>)
+                    </li>
+                </th:block>
+                </ul>
+            </li>
+    </th:block>
+    </ul>
     </div>
-    <th:block th:replace="fragment/form::form-auto (action = ${action})" >...</th:block>
-
 </div>
 </body>
 </html>

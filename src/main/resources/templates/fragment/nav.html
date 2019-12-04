@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Nav</title>
@@ -7,55 +7,39 @@
 <body>
 <div th:fragment="AllMenu" id="Menu">
     <nav th:fragment="MainMenu" id="MainMenu" class="nav active">
-        <a href="/" class="brand">Start</a>
+        <a href="/" class="brand">JBC, Co.</a>
         <a th:replace="::nav-link(
-            label='Entity #1',
-            href='javascript: document.getElementById(\'Menu\').activateMenu(document.getElementById(\'CustomerMenu\'));',
+            label='Departments',
+            href='javascript: document.getElementById(\'Menu\').activateMenu(document.getElementById(\'DepartmentsMenu\'));',
+            icon='recent_actors',
+            theme='filled',
+            class='')">link</a>
+        <a th:replace="::nav-link(
+            label='Employees',
+            href='javascript: document.getElementById(\'Menu\').activateMenu(document.getElementById(\'EmployeesMenu\'));',
             icon='face',
             theme='filled',
             class='')">link</a>
-        <a th:replace="::nav-link(
-            label='Entity #2',
-            href='#',
-            icon='mood',
-            theme='filled',
-            class='')">link</a>
-        <th:block th:unless="${authentication.isAuthenticated()}">
-            <a th:replace="::nav-link(
-                label='Register',
-                href='/user/add',
-                icon='person_add',
-                theme='filled',
-                class='')">link</a>
+
+        <th:block sec:authorize="!hasAuthority('USER')">
             <a th:replace="::nav-link(
                 label='Login',
                 href='/login',
                 icon='account_box',
                 theme='filled',
-                class='')">link</a>
+                class='edge')">link</a>
         </th:block>
-        <th:block th:if="${authentication.isAuthenticated()}">
+        <th:block sec:authorize="hasAuthority('USER')">
             <a th:replace="::nav-link(
                 label='Logout',
                 href='/logout',
                 icon='exit_to_app',
                 theme='filled',
-                class='')">link</a>
-            <a th:replace="::nav-link(
-                label='Setting',
-                href='#',
-                icon='tune',
-                theme='filled',
                 class='edge')">link</a>
         </th:block>
+
     </nav>
-    <nav th:fragment="CustomerMenu" id="CustomerMenu" class="nav inactive">
-        <a th:replace="::nav-link(
-            label='Entity #1',
-            href='#',
-            icon='face',
-            theme='filled',
-            class='active')">link</a>
+    <nav th:fragment="EmployeesMenu" id="EmployeesMenu" class="nav inactive">
         <a th:replace="::nav-link(
             label='Back',
             href='javascript: document.getElementById(\'Menu\').activateMenu(document.getElementById(\'MainMenu\'));',
@@ -63,29 +47,55 @@
             theme='filled',
             class='')">link</a>
         <a th:replace="::nav-link(
-            label='Search',
+            label='Employees',
             href='#',
+            icon='face',
+            theme='filled',
+            class='active')">link</a>
+        <a th:replace="::nav-link(
+            label='Search',
+            href='/employee/search',
             icon='search',
             theme='filled',
             class='')">link</a>
+        <th:block sec:authorize="hasAuthority('ADMIN')">
+            <a th:replace="::nav-link(
+                label='Add',
+                href='/employee/add',
+                icon='person_add',
+                theme='filled',
+                class='')">link</a>
+        </th:block>
+
+    </nav>
+    <nav th:fragment="DepartmentsMenu" id="DepartmentsMenu" class="nav inactive">
         <a th:replace="::nav-link(
-            label='Add',
-            href='#',
-            icon='person_add',
+            label='Back',
+            href='javascript: document.getElementById(\'Menu\').activateMenu(document.getElementById(\'MainMenu\'));',
+            icon='arrow_back',
             theme='filled',
             class='')">link</a>
         <a th:replace="::nav-link(
-            label='Edit',
+            label='Departments',
             href='#',
-            icon='edit',
+            icon='recent_actors',
             theme='filled',
-            class='')">link</a>
+            class='active')">link</a>
         <a th:replace="::nav-link(
-            label='Delete',
-            href='#',
-            icon='delete_forever',
+            label='Search',
+            href='/department/search',
+            icon='search',
             theme='filled',
             class='')">link</a>
+        <th:block sec:authorize="hasAuthority('ADMIN')">
+            <a th:replace="::nav-link(
+                label='Add',
+                href='/department/add',
+                icon='add_box',
+                theme='filled',
+                class='')">link</a>
+        </th:block>
+
     </nav>
     <script>
         (function (scope) {

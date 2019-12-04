@@ -19,6 +19,10 @@ tr.user-input {
 
 }
 
+tr.user-input .input-radio-group {
+    text-align: start !important;
+    margin-left: 5px;
+}
 tr.user-input td {
     border-bottom: 1px solid #111111 !important;
 }

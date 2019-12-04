@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @ActionMapping(Action= ActionType.LOGIN, Method=RequestMethod.POST, Url="/login", Label="Login")
 public class Credential {
 
-    @UserInput(Ordinal = 1, Label = "Username")
+    @UserInput(Ordinal = 1, Label = "Email")
     private String username;
 
     @UserInput(Ordinal = 2, Label = "Password", Secret = true)
