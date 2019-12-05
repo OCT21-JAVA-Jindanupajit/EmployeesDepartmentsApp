@@ -8,6 +8,8 @@ import com.jindanupajit.starter.util.thymeleaf.UserInput;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.persistence.Id;
+import java.util.ArrayList;
+
 @ActionMapping(Action= ActionType.PERSIST, Method= RequestMethod.POST, Url="/department/add", Label="Add")
 @ActionMapping(Action=ActionType.MERGE, Method=RequestMethod.POST, Url="/department/edit", Label="Save")
 @ActionMapping(Action=ActionType.DELETE, Method=RequestMethod.POST, Url="/department/delete", Label="Delete")
@@ -44,10 +46,15 @@ public class DepartmentForm {
     }
 
     public Department toDepartment() {
-        return new Department(this.id, this.name, null);
+        return new Department(this.id, this.name, new ArrayList<>());
     }
 
     public static DepartmentForm fromDepartment(Department department) {
         return new DepartmentForm(department.getId(), department.getName());
+    }
+
+    public Department mergeTo(Department department) {
+        department.setName(this.name);
+        return department;
     }
 }

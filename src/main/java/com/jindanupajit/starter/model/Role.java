@@ -16,7 +16,12 @@ public class Role implements GrantedAuthority {
     @NaturalId
     private String authority;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(
+            fetch = FetchType.EAGER,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            mappedBy = "authorities"
+            // Reverse end
+    )
     private Collection<Employee> employeeCollection;
 
     public Role() {
@@ -49,5 +54,10 @@ public class Role implements GrantedAuthority {
 
     public void setEmployeeCollection(Collection<Employee> employeeCollection) {
         this.employeeCollection = employeeCollection;
+    }
+
+    @Override
+    public String toString() {
+        return this.authority;
     }
 }

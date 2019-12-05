@@ -23,12 +23,17 @@ public class Employee implements UserDetails {
     private boolean credentialsNonExpired;
     private boolean enabled;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(
+            fetch = FetchType.EAGER,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE}
+            // Owner
+    )
     private Collection<Role> authorities;
 
     @ManyToOne(
-        fetch = FetchType.EAGER,
-        cascade = {CascadeType.PERSIST, CascadeType.MERGE} // do not delete dept. when delete a user
+            fetch = FetchType.EAGER,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE} // do not delete dept. when delete a user
+            // Owner
     )
     private Department department;
 
@@ -145,5 +150,10 @@ public class Employee implements UserDetails {
 
     public void setDepartment(Department department) {
         this.department = department;
+    }
+
+    @Override
+    public String toString() {
+        return this.username;
     }
 }

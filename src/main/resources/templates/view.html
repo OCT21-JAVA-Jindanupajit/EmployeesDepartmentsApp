@@ -8,11 +8,10 @@
 <nav th:replace="fragment/nav :: AllMenu">...</nav>
 <div id="display">
     <div class="container">
-    <div class="display-4 mx-auto my-2">Welcome to JBC, Co.</div>
+    <div class="display-4 mx-auto my-2">Company Directory</div>
     <ul>
     <th:block th:each="department : ${departmentCollection}">
-            <li>
-                <a th:href="@{/department/edit(id=${department.id})}" th:text="${department.name}">...</a>
+            <li><strong><a th:href="@{/department/edit(id=${department.id})}" th:text="${department.name}">...</a></strong>
                 <ul>
                 <th:block th:each="employee : ${department.employeeCollection}">
                     <li> <a th:href="@{/employee/edit(id=${employee.id})}" th:text="${employee.displayName}">...</a>

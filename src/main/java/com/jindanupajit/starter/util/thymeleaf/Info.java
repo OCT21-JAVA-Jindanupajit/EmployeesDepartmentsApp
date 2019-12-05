@@ -1,5 +1,7 @@
 package com.jindanupajit.starter.util.thymeleaf;
 
+import com.jindanupajit.starter.util.Verbose;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.*;
@@ -12,9 +14,9 @@ public class Info {
     public static final String expressionObjectName = "info";
 
 
-        public static final ActionType PERSIST = ActionType.PERSIST;
-        public static final ActionType MERGE = ActionType.MERGE;
-        public static final ActionType DELETE = ActionType.DELETE;
+    public static final ActionType PERSIST = ActionType.PERSIST;
+    public static final ActionType MERGE = ActionType.MERGE;
+    public static final ActionType DELETE = ActionType.DELETE;
     public static final ActionType LOGIN = ActionType.LOGIN;
 
     public String classNameOf(Object o) {
@@ -22,6 +24,7 @@ public class Info {
     }
 
     public List<FieldInfo> getAllSettableFieldOf(Object o) {
+        Verbose.printlnf("Lookup settable fields of '%s'", o.getClass().getName());
         HashSet<FieldInfo> settableFields = new HashSet<>();
         for(Method method : o.getClass().getDeclaredMethods()){
             String name = method.getName();
@@ -38,7 +41,6 @@ public class Info {
                 if (field.getType() != type)
                     continue;
 
-                System.out.println(fieldName);
                 if (Modifier.isPublic(method.getModifiers())) {
                     FieldInfo fieldInfo = new FieldInfo(fieldName, type.getName().replace(".","-"));
 
@@ -74,16 +76,15 @@ public class Info {
                         fieldInfo.setPlaceHolder(userInput.PlaceHolder());
                         fieldInfo.setSecret(userInput.Secret());
                     }
-
+                    Verbose.printlnf("Found '%s' with type '%s'", fieldInfo.getName(), fieldInfo.getType());
                     settableFields.add(fieldInfo);
                 }
-            } catch (NoSuchFieldException e) {
-                continue;
-            }
+            } catch (NoSuchFieldException ignored) { }
         }
 
         ArrayList<FieldInfo> sortedSettableFields = new ArrayList<>(settableFields);
         Collections.sort(sortedSettableFields);
+        Verbose.printlnf("Lookup end.");
         return sortedSettableFields;
     }
 
@@ -91,18 +92,21 @@ public class Info {
         if (obj == null)
             return null;
         ActionMapping[] actionMappings = obj.getClass().getDeclaredAnnotationsByType(ActionMapping.class);
-        System.out.println("Get ActionHandler of " + obj.getClass().getName());
-        System.out.println("Contain "+actionMappings.length);
+
+        Verbose.printlnf("ActionHandler lookup '%s' for '%s'", actionType.name(), obj.getClass().getName());
+        Verbose.printlnf("The ActionMapping has %d record(s). ",actionMappings.length);
         for (ActionMapping actionMapping : actionMappings) {
-            System.out.print(actionMapping.Url());
+
             List<ActionType> actionTypes = Arrays.asList(actionMapping.Action());
             if (actionTypes.contains(actionType)) {
-                System.out.println(" yes");
+                Verbose.printlnf("Found ActionHandler for '%s' at '%s' (%s)",
+                        actionType.name(),
+                        actionMapping.Url(), actionMapping.Method());
                 return actionMapping;
             }
-            System.out.println(" no");
-        }
 
+        }
+        Verbose.printlnf("No ActionHandler for '%s' found!", actionType.name());
         return null;
     }
 

@@ -18,3 +18,12 @@ body {
 
     overflow: hidden;
 }
+
+a {
+    color: #43213a;
+}
+
+a:hover {
+    color: #643700;
+    text-decoration: none;
+}

@@ -3,9 +3,7 @@ package com.jindanupajit.starter.model;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class Department {
@@ -15,20 +13,25 @@ public class Department {
 
     private String name;
 
-    @OneToMany (fetch = FetchType.LAZY)
-    private Set<Employee> employeeCollection;
+    @OneToMany (
+            fetch = FetchType.LAZY,
+            mappedBy = "department"
+            // Reverse end
+    )
+    @OrderBy("displayName")
+    private List<Employee> employeeCollection;
 
     public Department() {
         this.name = "";
-        this.employeeCollection = new HashSet<>();
+        this.employeeCollection = new ArrayList<>();
     }
 
     public Department(String name) {
         this.name = name;
-        this.employeeCollection = new HashSet<>();
+        this.employeeCollection = new ArrayList<>();
     }
 
-    public Department(long id, String name, Set<Employee> employeeCollection) {
+    public Department(long id, String name, List<Employee> employeeCollection) {
         this.id = id;
         this.name = name;
         this.employeeCollection = employeeCollection;
@@ -50,11 +53,11 @@ public class Department {
         this.name = name;
     }
 
-    public Set<Employee> getEmployeeCollection() {
+    public List<Employee> getEmployeeCollection() {
         return employeeCollection;
     }
 
-    public void setEmployeeCollection(Set<Employee> employeeCollection) {
+    public void setEmployeeCollection(List<Employee> employeeCollection) {
         this.employeeCollection = employeeCollection;
     }
 
@@ -75,6 +78,6 @@ public class Department {
 
     @Override
     public String toString() {
-        return getName();
+        return this.name;
     }
 }

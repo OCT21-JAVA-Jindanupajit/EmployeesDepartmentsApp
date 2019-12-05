@@ -115,4 +115,25 @@ public class EmployeeForm {
 
         return employeeForm;
     }
+
+    public Employee mergeTo(Employee employee) {
+        employee.setDisplayName(this.displayName);
+        employee.setUsername(this.username);
+        if (!this.password.equals(""))
+            employee.setPassword(PasswordEncoder.getInstance().encode(this.password));
+        employee.setDepartment(this.department);
+        return employee;
+    }
+
+    @Override
+    public String toString() {
+        return "EmployeeForm{" +
+                "id=" + id +
+                ", displayName='" + displayName + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", passwordVerify='" + passwordVerify + '\'' +
+                ", department=" + department +
+                '}';
+    }
 }
