@@ -4,5 +4,8 @@ public enum ActionType {
     PERSIST,
     MERGE,
     DELETE,
-    LOGIN
+    LOGIN,
+    LIST,
+    VIEW,
+    SEARCH
 }

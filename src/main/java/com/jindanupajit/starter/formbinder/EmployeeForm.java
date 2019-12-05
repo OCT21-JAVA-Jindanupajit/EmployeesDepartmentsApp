@@ -24,10 +24,10 @@ public class EmployeeForm {
     @UserInput(Ordinal = 2, Label = "Email")
     private String username;
 
-    @UserInput(Ordinal = 3, Label = "Password")
+    @UserInput(Ordinal = 3, Label = "Password", Secret=true)
     private String password;
 
-    @UserInput(Ordinal = 4, Label = "Password Verify")
+    @UserInput(Ordinal = 4, Label = "Password Verify", Secret=true)
     private String passwordVerify;
 
     @UserInput(Ordinal = 5, Label = "Department")

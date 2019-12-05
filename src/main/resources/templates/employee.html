@@ -32,6 +32,18 @@
             </div>
         </div>
     </th:block>
+    <th:block th:if="${action == #info.VIEW}">
+        <div class="alert alert-danger" th:if="${param.error}" th:text="${param.error}">...</div>
+        <div class="alert alert-success" th:if="${param.success}" th:text="${param.success}">...</div>
+        <div class="alert alert-danger" th:if="${error}" th:text="${error}">...</div>
+        <div class="alert alert-success" th:if="${success}" th:text="${success}">...</div>
+        <div class="container">
+            <div class="display-4 my-2">Employee Directory</div>
+            <div class="" style="max-width: 800px;">
+                <th:block th:replace="fragment/view::view-auto (action = ${action})" >...</th:block>
+            </div>
+        </div>
+    </th:block>
 
 </div>
 </body>

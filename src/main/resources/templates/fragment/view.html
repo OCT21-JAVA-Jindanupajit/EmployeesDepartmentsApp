@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>View</title>
+    <!-- Responsive -->
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
+
+    <!--  Bootstrap 4.3.1  -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    <!--  /Bootstrap 4.3.1  -->
+
+
+</head>
+<body>
+<th:block th:remove="all">
+    <th:block th:fragment="view-auto (action)">
+        <th:block th:if="${searchObject}" th:with="searchHandler = ${#info.getActionHandler(searchObject, #info.SEARCH)}">
+            <div class="py-2 px-3 mb-3 container-flex border">
+                <form th:if="${searchHandler}"
+                      th:action="@{${searchHandler.Url()}}"
+                      th:method="${searchHandler.Method()}"
+                      th:object="${searchObject}">
+                    <table class="user-input table">
+                        <th:block th:each="field : ${#info.getAllSettableFieldOf(searchObject)}">
+                            <tr th:replace="fragment/form::__${field.type}__  (field = ${field})">...</tr>
+                        </th:block>
+                    </table>
+                    <div class="float-right">
+                        <button type="submit" th:if="${searchHandler}" role="button" class="btn btn-primary"
+                                th:text="${searchHandler.Label()}">Search</button>
+                    </div>
+                </form>
+
+            </div>
+        </th:block>
+
+        <th:block th:replace="::__${#info.typeOf(viewObject)}__  (obj=${viewObject}, action=${action})">
+            ...
+        </th:block>
+
+
+    </th:block>
+</th:block>
+<th:block th:remove="all">
+    <th:block th:fragment="java-util-ArrayList (obj, action)">
+
+        <th:block th:each="eachObj : ${obj}">
+            <th:block th:replace="::__${'List-'+#info.typeOf(eachObj)}__  (obj=${eachObj}, action=${action})">...</th:block>
+        </th:block>
+    </th:block>
+
+    <th:block th:fragment="List-com-jindanupajit-starter-model-Employee (obj, action)">
+        <div class="com-jindanupajit-starter-model-Employee" th:classappend="${'action-'+action}">
+            <a sec:authorize="hasAuthority('ADMIN')" th:href="@{/employee/edit(id=${obj.id})}" th:text="${obj.displayName}">...</a>
+            <span sec:authorize="!hasAuthority('ADMIN')" th:text="${obj.displayName}">...</span>
+            (<span th:text="${obj.username}">...</span>)
+        </div>
+    </th:block>
+
+    <th:block th:fragment="List-com-jindanupajit-starter-model-Department (obj, action)">
+        <div class="com-jindanupajit-starter-model-Department" th:classappend="${'action-'+action}">
+            <a sec:authorize="hasAuthority('ADMIN')" th:href="@{/department/edit(id=${obj.id})}" th:text="${obj.name}">...</a>
+            <span sec:authorize="!hasAuthority('ADMIN')" th:text="${obj.name}">...</span>
+            <ul>
+                <th:block th:each="employee : ${obj.employeeCollection}">
+                    <li> <a sec:authorize="hasAuthority('ADMIN')" th:href="@{/employee/edit(id=${employee.id})}" th:text="${employee.displayName}">...</a>
+                        <span sec:authorize="!hasAuthority('ADMIN')" th:text="${employee.displayName}">...</span>
+                        (<a sec:authorize="!isAuthenticated()" th:href="@{/login(username=${employee.username})}"  th:text="${employee.username}">...
+                        </a><span sec:authorize="isAuthenticated()" th:text="${employee.username}">...</span>)
+                    </li>
+                </th:block>
+            </ul>
+        </div>
+    </th:block>
+
+</th:block>
+
+</body>
+</html>

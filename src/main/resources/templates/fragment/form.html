@@ -10,7 +10,7 @@
     <th:block th:fragment="form-auto (action)">
         <div class="container p-2" th:with="actionHandler = ${#info.getActionHandler(formObject, action)}">
             <form th:if="${actionHandler}"
-                  th:action="${actionHandler.Url()}"
+                  th:action="@{${actionHandler.Url()}}"
                   th:method="${actionHandler.Method()}"
                   th:object="${formObject}">
                 <table class="user-input table">
@@ -18,7 +18,15 @@
                         <tr th:replace="fragment/form::__${field.type}__  (field = ${field})">...</tr>
                     </th:block>
                 </table>
-                <button role="button" class="btn btn-success float-right" type="submit" th:text="${actionHandler.Label()}">Submit</button>
+                <div class="float-right">
+                    <th:block th:with="deleteHandler = ${#info.getActionHandler(formObject, #info.DELETE)}">
+                        <a th:if="${deleteHandler}" role="button" class="btn btn-outline-danger"
+                           th:href="@{${deleteHandler.Url()}(id=${formObject.id}, confirmed=true)}"
+                           th:text="${deleteHandler.Label()}">...</a>
+                    </th:block>
+                    <button role="button" class="btn btn-warning" type="reset">Reset</button>
+                    <button role="button" class="btn btn-success" type="submit" th:text="${actionHandler.Label()}">Submit</button>
+                </div>
             </form>
         </div>
     </th:block>

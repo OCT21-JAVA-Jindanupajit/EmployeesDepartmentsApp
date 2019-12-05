@@ -18,9 +18,18 @@ public class Info {
     public static final ActionType MERGE = ActionType.MERGE;
     public static final ActionType DELETE = ActionType.DELETE;
     public static final ActionType LOGIN = ActionType.LOGIN;
+    public static final ActionType LIST = ActionType.LIST;
+    public static final ActionType VIEW = ActionType.VIEW;
+    public static final ActionType SEARCH = ActionType.SEARCH;
 
     public String classNameOf(Object o) {
         return o.getClass().getName();
+    }
+
+    public String typeOf(Object o) {
+        String type = classNameOf(o).replace(".","-");
+        Verbose.printlnf("#info::typeOf(...) = '%s'", type);
+        return type;
     }
 
     public List<FieldInfo> getAllSettableFieldOf(Object o) {

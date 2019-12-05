@@ -1,6 +1,8 @@
 package com.jindanupajit.starter.controller;
 
 import com.jindanupajit.starter.formbinder.EmployeeForm;
+import com.jindanupajit.starter.formbinder.EmployeeSearchForm;
+import com.jindanupajit.starter.model.Department;
 import com.jindanupajit.starter.model.Employee;
 import com.jindanupajit.starter.model.Role;
 import com.jindanupajit.starter.model.repository.DepartmentRepository;
@@ -60,6 +62,61 @@ public class EmployeeController {
         model.addAttribute("formObject", EmployeeForm.fromEmployee(employee));
         model.addAttribute("action", ActionType.MERGE);
         return "employee";
+    }
+
+    @GetMapping("/search")
+    public String search(Model model, @RequestParam(name="q") Optional<String> query) {
+        Verbose.printlnf("Search Employee for '%s'", query.orElse("all"));
+        model.addAttribute("viewObject",
+                query.isPresent()?
+                    employeeRepository.findAllByDisplayNameContainingIgnoreCaseOrUsernameContainingIgnoreCaseOrderByDisplayName(query.get(), query.get()):
+                    employeeRepository.findAllByOrderByDisplayName());
+        model.addAttribute("searchObject", new EmployeeSearchForm());
+        model.addAttribute("action", ActionType.VIEW);
+
+        return "employee";
+    }
+
+    @GetMapping("/delete")
+    public String delete(Model model, @RequestParam("id") String idString, @RequestParam("confirmed") boolean confirmed) {
+
+        long id = Long.parseLong(idString);
+        if (!confirmed)  return "redirect:/employee/edit?error=Deletion+not+confirmed%21&id="+id;
+
+        Optional<Employee> optionalEmployee = employeeRepository.findById(id);
+
+        if (!optionalEmployee.isPresent()) return "redirect:/employee/search?error=Not+found%21";
+
+
+        Employee employee = optionalEmployee.get();
+
+        Department department = employee.getDepartment();
+        if (department != null) {
+            Verbose.printlnf("Unlink Employee('%s') from Department('%s')", employee.getUsername(), department.getName());
+
+            department.getEmployeeCollection().remove(employee);
+            departmentRepository.save(department);
+        }
+
+        if (employee.getAuthorities() != null) {
+            for (Role eachRole : employee.getAuthorities()) {
+                Verbose.printlnf("Unlink Employee('%s') from Role('%s')", employee.getUsername(), eachRole.getAuthority());
+                eachRole.getEmployeeCollection().remove(employee);
+                roleRepository.save(eachRole);
+            }
+
+            Verbose.printlnf("Unlink Department and Role from Employee(%s)", employee.getUsername());
+            employee.getAuthorities().clear();
+        }
+
+        employee.setDepartment(null);
+        employee.setAuthorities(null);
+        employeeRepository.save(employee);
+
+        Verbose.printlnf("Delete Employee('%s')", optionalEmployee.get().getUsername());
+        employeeRepository.delete(employee);
+
+        return "redirect:/employee/search?success=Employee+deleted.";
     }
 
     @PostMapping(value="/add")

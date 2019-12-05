@@ -35,7 +35,7 @@ public class MainController {
     @GetMapping("/")
     public String HomePage(Model model) {
 
-        return "view";
+        return "redirect:/department/search";
     }
 
 

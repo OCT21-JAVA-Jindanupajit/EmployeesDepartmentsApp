@@ -25,14 +25,14 @@ public class Employee implements UserDetails {
 
     @ManyToMany(
             fetch = FetchType.EAGER,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE}
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}
             // Owner
     )
     private Collection<Role> authorities;
 
     @ManyToOne(
             fetch = FetchType.EAGER,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE} // do not delete dept. when delete a user
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}
             // Owner
     )
     private Department department;

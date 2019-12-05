@@ -27,26 +27,34 @@ public class DatabaseInitializer implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
+        Verbose.printlnf("Begin");
 
 
         Role roleAdmin, roleUser;
 
         if (roleRepository.count() == 0) {
+            Verbose.printlnf("Begin - role");
             roleAdmin = new Role("ADMIN");
             roleUser = new Role("USER");
 
             Verbose.printlnf("Add Role('%s') and Role('%s')",roleAdmin.getAuthority(), roleUser.getAuthority());
             roleRepository.saveAll(Arrays.asList(roleAdmin, roleUser));
         } else {
+            Verbose.printlnf("Skipped - role");
+            Verbose.printlnf("roleRepository.findByAuthority(\"ADMIN\")");
             roleAdmin = roleRepository.findByAuthority("ADMIN");
+            Verbose.printlnf("roleRepository.findByAuthority(\"USER\")");
             roleUser = roleRepository.findByAuthority("USER");
+            Verbose.printlnf("End of finding");
         }
 
 
 
         Department deptIT, deptRND;
         List<Department> allDepartment = new ArrayList<>();
+
         if (departmentRepository.count() == 0) {
+            Verbose.printlnf("Begin - department");
             Arrays.asList(
                 "Information Technology",
                 "Production",
@@ -63,17 +71,16 @@ public class DatabaseInitializer implements CommandLineRunner {
                         allDepartment.add(dept);
                     }
             );
+        } else {
+            Verbose.printlnf("Skipped - department");
         }
 
         deptIT = departmentRepository.findByName("Information Technology");
         deptRND = departmentRepository.findByName("Research and Development (R&D)");
 
 
-
-
-
         if (employeeRepository.count() == 0) {
-
+            Verbose.printlnf("Begin - employee");
             Employee employeeAdmin = new Employee("Administrator",
                     "admin@example.com",
                     PasswordEncoder.getInstance().encode("password"),
@@ -175,9 +182,11 @@ public class DatabaseInitializer implements CommandLineRunner {
                 employeeRepository.save(employee);
             } );
 
+        } else {
+            Verbose.printlnf("Skipped - employee");
         }
 
-
+        Verbose.printlnf("End");
 
     }
 }
