@@ -1,19 +1,22 @@
 package com.jindanupajit.starter.formbinder;
 
+import com.jindanupajit.plugins.org.springframework.boot.binder.Binder;
 import com.jindanupajit.starter.model.Department;
 import com.jindanupajit.starter.model.Employee;
 import com.jindanupajit.starter.service.PasswordEncoder;
 import com.jindanupajit.starter.util.thymeleaf.ActionMapping;
 import com.jindanupajit.starter.util.thymeleaf.ActionType;
 import com.jindanupajit.starter.util.thymeleaf.UserInput;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.persistence.Id;
 
+@Component
 @ActionMapping(Action=ActionType.PERSIST, Method=RequestMethod.POST, Url="/employee/add", Label="Add")
 @ActionMapping(Action=ActionType.MERGE, Method=RequestMethod.POST, Url="/employee/edit", Label="Save")
 @ActionMapping(Action=ActionType.DELETE, Method=RequestMethod.POST, Url="/employee/delete", Label="Delete")
-public class EmployeeForm {
+public class EmployeeForm implements Binder {
 
     @Id
     private long id;

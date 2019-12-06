@@ -1,7 +1,10 @@
 package com.jindanupajit.starter.configuration;
 
+import com.jindanupajit.plugins.org.springframework.boot.binder.AutoConfiguration;
+import com.jindanupajit.plugins.org.springframework.boot.binder.Binder;
 import com.jindanupajit.starter.service.PasswordEncoder;
 import com.jindanupajit.starter.service.UserDetailsServiceImpl;
+import com.jindanupajit.starter.util.Verbose;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +12,9 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+
+import java.util.List;
 
 
 @Configuration
@@ -17,6 +23,12 @@ public class SecurityConfiguration  extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
+
+    @Autowired
+    private RequestMappingHandlerMapping requestMappingHandlerMapping;
+
+    @Autowired
+    private List<Binder> binderList;
 
     @Value("${spring.h2.console.enabled}")
     private boolean h2ConsoleEnabled;
@@ -27,15 +39,19 @@ public class SecurityConfiguration  extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 
-
+        Verbose.printlnf("set userDetailsService");
         auth    .userDetailsService(userDetailsService)
                 .passwordEncoder(PasswordEncoder.getInstance());
 
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http    .authorizeRequests()
+    protected void configure(HttpSecurity httpSecurity) throws Exception {
+        Verbose.printlnf("set HttpSecurity");
+
+        AutoConfiguration.webSecurity(httpSecurity, requestMappingHandlerMapping, binderList);
+
+        httpSecurity    .authorizeRequests()
                 .antMatchers(
                         "/",
                         "/login",
@@ -50,27 +66,27 @@ public class SecurityConfiguration  extends WebSecurityConfigurerAdapter {
                 .permitAll();
 
         if (h2ConsoleEnabled) {
-            http.authorizeRequests().antMatchers(h2ConsolePath + "/**").permitAll();
-            http.csrf().disable();
-            http.headers().frameOptions().disable();
+            httpSecurity.authorizeRequests().antMatchers(h2ConsolePath + "/**").permitAll();
+            httpSecurity.csrf().disable();
+            httpSecurity.headers().frameOptions().disable();
         }
 //        http    .authorizeRequests()
 //                    .antMatchers("/blogEntry/edit/**","/blogEntry/edit/process","/blogEntry/delete/**")
 //                    .access("hasAnyRole('AUTHENTICATED_USER', 'ROLE_ADMIN')");
 
 
-        http    .authorizeRequests()
+        httpSecurity    .authorizeRequests()
                 .anyRequest()
                 .authenticated()
                 .and()
                 .formLogin().loginPage("/login").permitAll();
 
-        http    .authorizeRequests()
+        httpSecurity    .authorizeRequests()
                 .and()
                 .exceptionHandling()
                 .accessDeniedPage("/403");
 
-        http    .logout();
+        httpSecurity    .logout();
 
 
 
